@@ -18,7 +18,7 @@ class testpanier(unittest.TestCase):
         password.send_keys("inlo1234")
         login = self.driver.find_element_by_name("formconnexion")
         login.click()
-        sleep(10)
+        sleep(3)
 
     # Test sur l'ajout d'un produit sans être connecté
     def test_notConnected(self):
@@ -26,10 +26,16 @@ class testpanier(unittest.TestCase):
         self.driver.find_element_by_name("quantite").send_keys(2)
         self.driver.find_element_by_name("ajoutPanier").click()
         self.driver.implicitly_wait(5)
-        error = self.driver.find_element_by_class_name(".card .card-cascade .wider .reverse")
-        #error = self.driver.find_element_by_class_name("card card-cascade wider reverse")
-        assert "Vous devez être connecté pour ajouter cet article à votre panier." in error
-        sleep(15000)
+        erreur = self.driver.find_element_by_xpath("//font").text
+        self.assertEqual(erreur,"Vous devez être connecté pour ajouter cet article à votre panier.")
+
+    def test_inputEmpty(self):
+        self.loginClient()
+        self.driver.find_element_by_xpath('//a[contains(@href,"produit.php")]').click()
+        self.driver.find_element_by_xpath('//a[contains(@href,"produitEntier.php?id=3")]').click()
+        self.driver.find_element_by_name("ajoutPanier").click()
+        erreur = self.driver.find_element_by_xpath("//font").text
+        self.assertEqual(erreur, "Il faut rentrer une valeur pour ajouter au panier.")
 
 if __name__ == '__main__':
     unittest.main()
