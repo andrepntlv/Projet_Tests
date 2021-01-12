@@ -28,26 +28,27 @@ class testpanier(unittest.TestCase):
         self.driver.find_element_by_name("quantite").send_keys(15)
         self.driver.find_element_by_name("ajoutPanier").click()
 
-
     # Test sur l'ajout d'un produit sans être connecté
-    def test_notConnected(self):
+    def test_nonConnecte(self):
+        self.driver.maximize_window()
         self.driver.get("http://esig-sandbox.ch/team20_1_v2/produitEntier.php?id=3")
         self.driver.find_element_by_name("quantite").send_keys(2)
         self.driver.find_element_by_name("ajoutPanier").click()
-        self.driver.implicitly_wait(5)
         erreur = self.driver.find_element_by_xpath("//font").text
-        self.assertEqual(erreur,"Vous devez être connecté pour ajouter cet article à votre panier.")
+        self.assertEqual(erreur, "Vous devez être connecté pour ajouter cet article à votre panier.")
+        self.driver.close()
 
-    #Test sur l'ajout d'un produit sans choisir une valeur dans l'input
-    def test_inputEmpty(self):
+    # Test sur l'ajout d'un produit sans choisir une valeur dans l'input
+    def test_champVide(self):
         self.loginClient()
         self.driver.find_element_by_xpath('//a[contains(@href,"produit.php")]').click()
         self.driver.find_element_by_xpath('//a[contains(@href,"produitEntier.php?id=3")]').click()
         self.driver.find_element_by_name("ajoutPanier").click()
         erreur = self.driver.find_element_by_xpath("//font").text
         self.assertEqual(erreur, "Il faut rentrer une valeur pour ajouter au panier.")
+        self.driver.close()
 
-    #Test s'il n'y a pas assez de quantité en stock
+    # Test s'il n'y a pas assez de quantité en stock
     def test_quantiteStock(self):
         self.loginClient()
         self.driver.find_element_by_xpath('//a[contains(@href,"produit.php")]').click()
@@ -56,8 +57,9 @@ class testpanier(unittest.TestCase):
         self.driver.find_element_by_name("ajoutPanier").click()
         erreur = self.driver.find_element_by_xpath("//font").text
         self.assertEqual(erreur, "Il n'y a pas assez de quantité en stock.")
+        self.driver.close()
 
-    #Test de l'ajout d'un produit fonctionnel
+    # Test de l'ajout d'un produit fonctionnel
     def test_ajoutProduit(self):
         self.loginClient()
         self.driver.find_element_by_xpath('//a[contains(@href,"produit.php")]').click()
@@ -66,12 +68,26 @@ class testpanier(unittest.TestCase):
         self.driver.find_element_by_name("ajoutPanier").click()
         erreur = self.driver.find_element_by_xpath("//font").text
         self.assertEqual(erreur, "Vous avez bien ajouté cet article à votre panier.")
+        self.driver.close()
 
-    def test_commander(self):
+    # Test le prix total du panier
+    def test_prixPanier(self):
         self.ajoutArticlePanier()
-        self.driver.find_element_by_xpath('//a[contains(@href,"panier.php")]').click()
-        prix = self.driver.find_element_by_xpath("//tr[4]/td[2]").text
-        self.assertEqual(prix, "315")
+        self.driver.get("https://www.esig-sandbox.ch/team20_1_v2/panier.php")
+        prix = self.driver.find_element_by_xpath("//tr[3]/td[2]").text
+        self.assertEqual(prix, "Prix total : 315")
+        self.driver.close()
+
+    # Test pour passer commande d'un article
+    def test_commande(self):
+        self.ajoutArticlePanier()
+        self.driver.get("https://www.esig-sandbox.ch/team20_1_v2/panier.php")
+        self.driver.find_element_by_link_text("Commander").click()
+        self.driver.find_element_by_name("paiement").click()
+        self.driver.find_element_by_name("formModif").click()
+        commande = self.driver.find_element_by_xpath("//font").text
+        self.assertEqual(commande, "Votre commande à bien été enregistré.")
+        self.driver.close()
 
 
 if __name__ == '__main__':
