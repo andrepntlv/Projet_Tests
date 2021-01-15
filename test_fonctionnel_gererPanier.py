@@ -9,7 +9,6 @@ class testpanier(unittest.TestCase):
 
     # Connexion en tant que client au site Yatara Massages
     def loginClient(self):
-        self.driver = webdriver.Chrome("drivers\chromedriver.exe")
         self.driver.maximize_window()
         self.driver.get("https://www.esig-sandbox.ch/team20_1_v2/connexion.php")
         name = self.driver.find_element_by_id("fname")

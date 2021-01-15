@@ -1,7 +1,6 @@
 import unittest
 from reduction_prixPanier import reduction_prixPanier
 
-
 class MyTestCase(unittest.TestCase):
     # 4 tests "happy path"
     def test_montantSuperieurA1000(self):
@@ -42,7 +41,7 @@ class MyTestCase(unittest.TestCase):
             [{'quantity': 8, 'price': "test"},
              {'quantity': 9, 'price': 89.00}]
         )
-        with self.assertRaises(TypeError): # Dylan Monteiro aide pour la syntaxe
+        with self.assertRaises(TypeError):  # Dylan Monteiro aide pour la syntaxe
             reduction_prixPanier(panier)
 
     def test_mauvaisTypeBoolean(self):
@@ -86,6 +85,7 @@ class MyTestCase(unittest.TestCase):
         )
         montant = reduction_prixPanier(panier)
         self.assertEqual(0.10, montant)
+
 
 if __name__ == '__main__':
     unittest.main()
