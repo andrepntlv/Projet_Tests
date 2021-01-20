@@ -57,17 +57,15 @@ class MyTestCase(unittest.TestCase):
             [{'quantity': 4, 'price': -50.00},
              {'quantity': 1, 'price': -20.00}]
         )
-        # montant = reduction_prixPanier(panier)
         with self.assertRaises(TypeError):
             reduction_prixPanier(panier)
 
     def test_montantValeurCharniere(self):
         panier = (
-            [{'quantity': 4, 'price': 50.00},
-             {'quantity': 1, 'price': 49.99}]
+            [{'quantity': 1, 'price': -00.001}]
         )
-        montant = reduction_prixPanier(panier)
-        self.assertEqual(249.99, montant)
+        with self.assertRaises(TypeError):
+            reduction_prixPanier(panier)
 
     # 2 tests cas extrêmes
     def test_montantPanierEnorme(self):
